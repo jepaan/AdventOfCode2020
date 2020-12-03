@@ -20,3 +20,7 @@ Cargo.lock
 # already existing elements were commented out
 
 #/target
+/.idea/AdventOfCode2020.iml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
