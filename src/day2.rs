@@ -5,7 +5,8 @@
 
     pub fn printResult()
     {
-        let mut result = 0;
+        let mut result1 = 0;
+        let mut result2 = 0;
         if let Ok(lines) = fileUtil::readLines("data/input2.txt") {
             // Consumes the iterator, returns an (Optional) String
             for line in lines {
@@ -21,13 +22,19 @@
                         if count >= min && count <= max
                         {
                             //println!("{} Count was {} min {} max {}", value, count, min, max);
-                            result += 1;
+                            result1 += 1;
                         }
 
+                        let first = password.as_bytes()[min-1] as char == c;
+                        let second = password.as_bytes()[max-1] as char == c;
+                        if first ^ second
+                        {
+                            result2 += 1;
+                        }
 
                     }
                 }
             }
         }
-        println!("Found {}", result);
+        println!("Found {} and {}", result1, result2);
     }
