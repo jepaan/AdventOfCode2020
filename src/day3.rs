@@ -36,15 +36,30 @@ pub fn printResult()
     }
 
 
-    let depth = map.len();
-    let width = map[0].len();
-    let mut treeCount1 = 0;
-    for x in 1..depth
+    fn countTrees( xStep: usize, yStep: usize,  map: &Vec<Vec<char> >) -> i64
     {
-        if map[x][(x*3) % width] == '#'
+        let depth = map.len();
+        let width = map[0].len();
+        let mut y = 0;
+        let mut treeCount1 = 0;
+        for x in (1..depth).step_by(xStep)
         {
-            treeCount1 += 1;
+            y += yStep;
+            if map[x][y % width] == '#'
+            {
+                treeCount1 += 1;
+            }
         }
+        return treeCount1;
     }
-    println!("Found {} rows and {} trees", map.len(), treeCount1);
+
+    println!("Found {} rows and {} trees", map.len(), countTrees(1, 3, &map));
+
+    let mut mult: i64 = countTrees(1, 1, &map);
+    mult *= countTrees(1, 3, &map);
+    mult *= countTrees(1, 5, &map);
+    mult *= countTrees(1, 7, &map);
+    let last = countTrees(2, 1, &map);
+    mult *= (last );
+    println!("Found {} mult", mult);
 }
