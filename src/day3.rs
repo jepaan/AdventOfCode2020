@@ -42,7 +42,7 @@ pub fn printResult()
         let width = map[0].len();
         let mut y = 0;
         let mut treeCount1 = 0;
-        for x in (1..depth).step_by(xStep)
+        for x in ((0+xStep)..depth).step_by(xStep)
         {
             y += yStep;
             if map[x][y % width] == '#'
@@ -50,16 +50,18 @@ pub fn printResult()
                 treeCount1 += 1;
             }
         }
+        println!("Returning {}", treeCount1);
         return treeCount1;
     }
 
     println!("Found {} rows and {} trees", map.len(), countTrees(1, 3, &map));
 
+
     let mut mult: i64 = countTrees(1, 1, &map);
     mult *= countTrees(1, 3, &map);
     mult *= countTrees(1, 5, &map);
     mult *= countTrees(1, 7, &map);
-    let last = countTrees(2, 1, &map);
-    mult *= (last );
+    mult *= countTrees(2, 1, &map);
+
     println!("Found {} mult", mult);
 }
