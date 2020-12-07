@@ -1,13 +1,14 @@
 
 
 pub use crate::fileUtil::fileUtil;
+use std::borrow::Borrow;
 
 
 struct Pair
-{
-    key: String,
-    value: String,
-}
+(
+    String,
+    String
+);
 
 pub fn printResult()
 {
@@ -25,7 +26,7 @@ pub fn printResult()
         {
             if let Ok(value) = line
             {
-                if(value.len() == 1)
+                if(value.len() == 0)
                 {
                     values.push(Vec::new());
                 }
@@ -35,26 +36,49 @@ pub fn printResult()
                     {
                         //println!("{}", (*pair).next());
 
-                        let mut p = (*pair).split(":");
-                        if p.count() != 2
+                        let p = (*pair).split(":");
+                        let vec:Vec<&str>  = p.collect::<Vec<&str>>();
+                        if vec.len() != 2
                         {
                             panic!("Bad number");
                         }
-                        for x in p {
-                            let y = x.to_string();
-                            let p: Pair = Pair{y, "sss".to};
-                            (*values.last()).push({y, "sss"});
-                        }
-
-                        //let k: p.next();
-                        //let v: p.next();
-                        //
-
-
+                        values.last_mut().unwrap().push(Pair(String::from(vec[0]),String::from(vec[1])));
                     }
                 }
             }
         }
     }
-    println!("{}", values.len() );
+
+    //let required = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+    let required = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+
+
+
+
+    fn validate(found: &Vec<Pair>, toFind: &[&str], index: usize ) -> bool
+    {
+        for pair in found
+        {
+            if pair.0 == toFind[index]
+            {
+                if index == 0
+                {
+                    return true;
+                }
+                return true && validate(found, toFind, index - 1);
+            }
+        }
+        return false;
+    }
+
+    let mut numberOfValid = 0;
+    for pairs in values
+    {
+        if validate(&pairs, required.borrow(), required.len() - 1)
+        {
+            numberOfValid += 1;
+        }
+    }
+
+    println!("Found {} valid", numberOfValid);
 }
