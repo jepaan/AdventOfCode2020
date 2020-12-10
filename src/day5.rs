@@ -6,7 +6,9 @@ use std::cmp;
 
 pub fn printResult()
 {
-    let mut max: i32 = 0;
+    let maxValue = 127*8+5;
+    let mut max: usize = 0;
+    let mut ids: Vec<usize> = (0..(maxValue)).collect();
     if let Ok(lines) = fileUtil::readLines("data/input5.txt") {
         // Consumes the iterator, returns an (Optional) String
         for line in lines {
@@ -29,7 +31,9 @@ pub fn printResult()
 
                         }
                     }
-                    max = cmp::max(max, row*8+col);
+                    let id: usize = row*8+col;
+                    ids[id] = 0;
+                    max = cmp::max(max, id);
                     //println!("Row {} Col {} id {}", row, col, row*8+col);
                 }
             }
@@ -37,4 +41,15 @@ pub fn printResult()
     }
 
     println!("The max value is {}", max);
+
+
+    ids.retain(|&x| x != 0);
+
+    for x in 1..ids.len()-1
+    {
+        if  ids[x] - ids[x-1] > 1  && ids[x+1] - ids[x] > 1
+        {
+            println!("Seat id is {}", ids[x]);
+        }
+    }
 }
