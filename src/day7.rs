@@ -27,7 +27,7 @@ pub fn printResult()
                     let second = elements.next().unwrap();
                     let key = String::from(first) + " " + second;
 
-                    println!("{}", key);
+                    //println!("{}", key);
                     elements.next();
 
 
@@ -39,7 +39,7 @@ pub fn printResult()
                         let innerSecond = elements.next();
                         if innerSecond.is_some()
                         {
-                            println!("{} {} {}", count.unwrap(), innerFirst.unwrap(), innerSecond.unwrap());
+                            //println!("{} {} {}", count.unwrap(), innerFirst.unwrap(), innerSecond.unwrap());
                             let name = String::from(innerFirst.unwrap()) + " " + innerSecond.unwrap();
                             if count.unwrap() != "no"
                             {
@@ -54,42 +54,57 @@ pub fn printResult()
                     {
                         panic!("Oh no");
                     }
-                    //First identify
                 }
             }
         }
+        let bagName = String::from("shiny gold");
+        let count = countBagOuter(&bagName, &rules);
+        println!("{} is in {}", bagName, count);
     }
 
-    fn hasBag(name: String, rules: &HashMap<String, Vec<Bag>>) -> bool
+    fn hasBag(bagToFind: &String, currentBag: &String, rules: &HashMap<String, Vec<Bag>>) -> bool
     {
-        let a = rules.get(&name);
+        let mut ret = false;
+        if bagToFind == currentBag
+        {
+            return true;
+        }
+
+        let a = rules.get(currentBag);
+        if a.is_none()
+        {
+            return false;
+        }
         let b = a.unwrap();
 
-        for element in (*b)
+        for element in &*b
         {
-            let b = element.name;
-            println!("{}", b);
+            ret = hasBag(bagToFind, &element.name, rules);
+            if ret == true
+            {
+                break;
+            }
         }
+        return ret;
     }
 
-    fn countBagOuter(name: String, rules: &HashMap<String, Vec<Bag>>) -> i32
+    fn countBagOuter(name: &String, rules: &HashMap<String, Vec<Bag>>) -> i32
     {
         let mut count = 0;
         for element in rules
         {
-            if hasBag(*(element.0), rules)
+            if element.0 == name //Has to be inside another
             {
+                continue;
+            }
+            if hasBag(name, &element.0, rules)
+            {
+                println!("Found {} in {}", name, &element.0);
                 count += 1;
             }
         }
-        let a = rules.get(&name);
-        let b = a.unwrap();
 
-        for element in (*b)
-        {
-            let b = element.name;
-            println!("{}", b);
-        }
+        return count;
     }
 
 
