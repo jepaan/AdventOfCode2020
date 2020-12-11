@@ -60,6 +60,8 @@ pub fn printResult()
         let bagName = String::from("shiny gold");
         let count = countBagOuter(&bagName, &rules);
         println!("{} is in {}", bagName, count);
+        let countCount = countBagsInBag(&bagName, &rules) - 1;
+        println!("{} contains a total of {}", bagName, countCount);
     }
 
     fn hasBag(bagToFind: &String, currentBag: &String, rules: &HashMap<String, Vec<Bag>>) -> bool
@@ -99,12 +101,44 @@ pub fn printResult()
             }
             if hasBag(name, &element.0, rules)
             {
-                println!("Found {} in {}", name, &element.0);
+                //println!("Found {} in {}", name, &element.0);
                 count += 1;
             }
         }
 
         return count;
+    }
+
+    fn countBagsInBag(name: &String, rules: &HashMap<String, Vec<Bag>>) -> i32
+    {
+        let mut count = 0;
+        let a = rules.get(name);
+        if a.is_none()
+        {
+            panic!("No list");
+        }
+        let b = a.unwrap();
+
+        if b.is_empty()
+        {
+            //println!("{} has none", name);
+            return 1;
+        }
+        //count += 1;
+
+        for element in &*b
+        {
+            //println!("{} has {} {}", name, element.name, element.count);
+            let thisCount = countBagsInBag(&element.name, rules);
+
+            count += thisCount*element.count;
+            //println!("Got thisCount of {}", thisCount*element.count);
+
+        }
+        //println!("{} has a total of {} bags", name, count);
+
+
+        return count + 1;
     }
 
 
