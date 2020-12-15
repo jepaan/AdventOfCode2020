@@ -1,4 +1,4 @@
-
+#![allow(non_snake_case)]
 //pub use crate::
 mod day1;
 mod fileUtil;

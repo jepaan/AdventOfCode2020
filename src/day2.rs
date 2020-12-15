@@ -1,5 +1,5 @@
 
-
+#![allow(non_snake_case)]
     pub use crate::fileUtil::fileUtil;
     use scan_fmt::scan_fmt;
 
