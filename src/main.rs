@@ -9,6 +9,7 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 //use day2::day2::printResult;
 
 
@@ -21,5 +22,6 @@ fn main() {
     //day5::printResult();
     //day6::printResult();
     //day7::printResult();
-    day8::printResult();
+    //day8::printResult();
+    day9::printResult();
 }
