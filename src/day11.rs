@@ -6,7 +6,8 @@ use std::collections::hash_map::Entry;
 use std::any::Any;
 
 
-#[derive(PartialEq)]
+//#[derive(PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 enum Tile
 {
     Empty = 1,
@@ -162,5 +163,92 @@ pub fn printResult()
     }
     println!("done {}", countType(&newTiles, &Tile::Occupied));
 
+    fn getFirstSeatInDirection(tiles: &Vec<Vec<Tile>>, mut row: usize, mut column: usize, rowStep: i32, columnStep: i32) -> Tile
+    {
+        let mut moving = true;
+
+        let mut usedRow: i32 = row as i32;
+        let mut usedColumn: i32 = column as i32;
+        while moving
+        {
+            row = ((row as i32) + rowStep) as usize;
+            column = ((column as i32) + columnStep) as usize;
+            if tiles.get(row).is_none()
+            {
+                return Tile::Floor;
+            }
+            if tiles[row].get(column).is_none()
+            {
+                return Tile::Floor;
+            }
+            if tiles[row][column] != Tile::Floor
+            {
+                return tiles[row][column];
+            }
+        }
+        return Tile::Floor;
+    }
+
+    fn countOccupiedAroundVisible(tiles: &Vec<Vec<Tile>>, row: usize, column: usize) -> usize
+    {
+        let mut returnValue = 0;
+        for rowStep in -1..=1
+        {
+            for columnStep in -1..=1
+            {
+                if(rowStep == 0 && columnStep == 0)
+                {
+                    continue;
+                }
+                if getFirstSeatInDirection(tiles, row, column, rowStep, columnStep) == Tile::Occupied
+                {
+                    returnValue += 1;
+                }
+            }
+        }
+        return returnValue;
+    }
+
+    fn doRound2(tiles: &Vec<Vec<Tile>>) -> Vec<Vec<Tile>>
+    {
+        let mut newTiles = Vec::new();
+        for row in 0..tiles.len()
+        {
+            let mut newRow = Vec::new();
+            for column in 0..tiles[0].len()
+            {
+                newRow.push(  match tiles[row][column]
+                {
+                    Tile::Occupied => if countOccupiedAroundVisible(tiles, row, column) > 4 {Tile::Empty} else {Tile::Occupied},
+                    Tile::Empty => if countOccupiedAroundVisible(tiles, row, column) > 0 {Tile::Empty} else {Tile::Occupied},
+                    Tile::Floor => Tile::Floor,
+                });
+            }
+            newTiles.push(newRow);
+        }
+        return newTiles;
+    }
+
+    let mut newTiles = doRound2(&tiles);
+    //println!("Doing one round!");
+    //print(&newTiles);
+    let mut roundCount = 1;
+    //println!("ddd {}", countOccupiedAroundVisible(&newTiles, 0, 2));
+    while true
+    {
+        //println!("Doing one more round!");
+        let newTiles2 = doRound2(&newTiles);
+        if roundCount > 2 || compareTiles(&newTiles, &newTiles2)
+        {
+            break;
+        }
+        else
+        {
+            newTiles = newTiles2;
+            //roundCount += 1;
+            //print(&newTiles);
+        }
+    }
+    println!("done {}", countType(&newTiles, &Tile::Occupied));
 }
 
