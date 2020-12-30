@@ -9,10 +9,17 @@ use scan_fmt::scan_fmt;
 //2 west
 // south
 
+struct Ferry1
+{
+    location: (i64, i64),
+    direction: i32,
+
+}
+
 pub fn printResult()
 {
-    let mut location: (i64, i64) = (0,0);
-    let mut currentDirection = 0;
+    let mut ferry1 = Ferry1 {location: (0, 0), direction: 0 };
+
     if let Ok(lines) = fileUtil::readLines("data/input12.txt") {
         // Consumes the iterator, returns an (Optional) String
         for line in lines {
@@ -25,15 +32,15 @@ pub fn printResult()
                     let c = it.next().unwrap();
                     let n = it.collect::<String>().parse().unwrap();;
                     //println!("{} {}", c, n);
-                    location = match c
+                    ferry1.location = match c
                     {
-                        'F' => moveFerry(currentDirection, location, n),
-                        'N'  => moveFerry(1, location, n),
-                        'W'  => moveFerry(2, location, n),
-                        'S'  => moveFerry(3, location, n),
-                        'E'  => moveFerry(0, location, n),
-                        'L' => {currentDirection = rotateFerryLeft(currentDirection, n); location},
-                        'R' => {currentDirection = rotateFerryRight(currentDirection, n); location},
+                        'F' => moveFerry(ferry1.direction, ferry1.location, n),
+                        'N'  => moveFerry(1, ferry1.location, n),
+                        'W'  => moveFerry(2, ferry1.location, n),
+                        'S'  => moveFerry(3, ferry1.location, n),
+                        'E'  => moveFerry(0, ferry1.location, n),
+                        'L' => {ferry1.direction = rotateFerryLeft(ferry1.direction, n); ferry1.location},
+                        'R' => {ferry1.direction = rotateFerryRight(ferry1.direction, n); ferry1.location},
 
                         _ => panic!("Unexpected"),
                     };
@@ -82,7 +89,6 @@ pub fn printResult()
         return direction;
     }
 
-    println!("Manhatten distance is {}. Location {} {}", i64::abs(location.0) + i64::abs(location.1), location.0, location.1);
-
+    println!("Manhatten distance is {}. Location {} {}", i64::abs(ferry1.location.0) + i64::abs(ferry1.location.1), ferry1.location.0, ferry1.location.1);
 }
 
