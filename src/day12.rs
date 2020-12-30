@@ -88,6 +88,57 @@ struct Ferry2
     waypoint: (i64, i64),
 }
 
+impl Ferry for Ferry2
+{
+    fn forward(&mut self, mut distance: i64) {
+        while distance > 0
+        {
+            self.location.0 += self.waypoint.0;
+            self.location.1 += self.waypoint.1;
+            distance -= 1;
+        }
+    }
+
+    fn changeDirection(&mut self, direction: char, value: i64) {
+        return match direction
+        {
+            'E' => self.waypoint.0 += value,
+            'N' => self.waypoint.1 += value,
+            'W' => self.waypoint.0 -= value,
+            'S' => self.waypoint.1 -= value,
+            _ => panic!("Wrong input"),
+        }
+    }
+
+    fn rotateLeft(&mut self, mut degrees: i64)
+    {
+        while degrees > 0
+        {
+            let tmp = self.waypoint.0;
+            self.waypoint.0 = -self.waypoint.1;
+            self.waypoint.1 = tmp;
+
+            degrees -= 90;
+        }
+    }
+    //East 10, North 4 = (10, 4)
+    //East 4, South 10 = (4, -10)
+    //West 10, South 4 = (-10, -4)
+    //North 10, West 4 = (-4, 10)
+    //East 10, North 4 = (10, 4)
+
+    fn rotateRight(&mut self, mut degrees: i64) {
+        while degrees > 0
+        {
+            let tmp = self.waypoint.0;
+            self.waypoint.0 = self.waypoint.1;
+            self.waypoint.1 = -tmp;
+
+            degrees -= 90;
+        }
+    }
+}
+
 pub fn printResult()
 {
     let mut ferry1 = Ferry1 {location: (0, 0), direction: 0 };
@@ -109,13 +160,13 @@ pub fn printResult()
                     //Ferry 1
                     match c
                     {
-                        'F' => ferry1.forward(n),
-                        'N'  => ferry1.changeDirection(c, n),
-                        'W'  => ferry1.changeDirection(c, n),
-                        'S'  => ferry1.changeDirection(c, n),
-                        'E'  => ferry1.changeDirection(c, n),
-                        'L' => ferry1.rotateLeft(n),
-                        'R' => ferry1.rotateRight(n),
+                        'F' => {ferry1.forward(n); ferry2.forward(n)},
+                        'N'  => {ferry1.changeDirection(c, n); ferry2.changeDirection(c, n)},
+                        'W'  => {ferry1.changeDirection(c, n); ferry2.changeDirection(c, n)},
+                        'S'  => {ferry1.changeDirection(c, n); ferry2.changeDirection(c, n)},
+                        'E'  => {ferry1.changeDirection(c, n); ferry2.changeDirection(c, n)},
+                        'L' => {ferry1.rotateLeft(n); ferry2.rotateLeft(n)},
+                        'R' => {ferry1.rotateRight(n); ferry2.rotateRight(n)},
 
                         _ => panic!("Unexpected"),
                     };
@@ -127,5 +178,6 @@ pub fn printResult()
 
 
     println!("Manhatten distance is {}. Location {} {}", i64::abs(ferry1.location.0) + i64::abs(ferry1.location.1), ferry1.location.0, ferry1.location.1);
+    println!("Manhatten distance is {}. Location {} {}", i64::abs(ferry2.location.0) + i64::abs(ferry2.location.1), ferry2.location.0, ferry2.location.1);
 }
 
