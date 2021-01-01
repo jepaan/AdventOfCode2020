@@ -2,6 +2,7 @@
 #![allow(non_snake_case)]
 
 pub use crate::fileUtil::fileUtil;
+use std::any::Any;
 
 struct Bus
 {
@@ -56,28 +57,40 @@ pub fn printResult()
         }
         println!("Bus {} is next. Result is {}", id, id*closest);
 
-        let mut otherTimestamp:i64 = 100000000000000; //100000000000000
-        while otherTimestamp > 0
+        //Brute force guessing is too slow even with hint.
+        let mut otherTimestamp  = 0;
+
+        let mut stepSize = busList[0].id;
+        let mut isOk = true;
+        for bus in &busList[1..]
         {
-            let mut isOk = true;
-            for bus in &busList
+            isOk = false;
+            while !isOk
             {
+                //println!("Trying {}", otherTimestamp);
                 let t2 = otherTimestamp + bus.offset;
-                if t2 % bus.id != 0
+                if t2 % bus.id == 0
                 {
-                    isOk = false;
-                    break;
+                    isOk = true;
+                    stepSize *= bus.id;
+                    //println!("Match for {} at {} (offset {})", bus.id, otherTimestamp, bus.offset);
                 }
+                else
+                {
+                    otherTimestamp += stepSize;
+                }
+
             }
-            if isOk
-            {
-                break;
-            }
-            else
-            {
-                otherTimestamp += 1;
-            }
+
         }
-        println!("Other time is {}", otherTimestamp);
+
+        if isOk
+        {
+            println!("Other time is {}", otherTimestamp);
+        }
+        else
+        {
+            println!("Did not work!");
+        }
     }
 }
