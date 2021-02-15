@@ -70,7 +70,7 @@ pub fn printResult()
     }
     println!("{} was spoken", last);
 
-    let mut stopAt = 2021;
+    let mut stopAt = 30000001;
     while(stopAt != round)
     {
         last = speak(&last, &round, &mut numbers);
